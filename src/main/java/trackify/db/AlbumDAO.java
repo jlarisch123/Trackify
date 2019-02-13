@@ -14,7 +14,7 @@ public class AlbumDAO extends AbstractDAO<Album> {
 
     public List<Album> findByUserId(int userId){
         return list(namedQuery("Album.findByUserId")
-                    .setParameter("id", userId));
+                    .setParameter("userId", userId));
     }
 }
 
