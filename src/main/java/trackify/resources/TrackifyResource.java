@@ -21,8 +21,21 @@ public class TrackifyResource {
     @GET
     @Path("/history/{id}")
     public List<Album> getHistory(@PathParam("id") int id){
+        List<Album> albums = getExistingHistory(id);
+        if(albums.isEmpty()){
+            //hit spotify api
+        }
+        return albums;
+    }
+
+    public List<Album> getExistingHistory(int id){
+
+        List<Album> albums =  albumDAO.findByUserId(id);
+
+
         //check info table if user already has one
         //else must his spotify api
-        return new ArrayList<Album>();
+
+        return albums;
     }
 }

@@ -8,19 +8,14 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 public class TrackifyConfiguration extends Configuration {
-private static final String CONFIG = "config";
+        private static final String DB = "database";
 
-@Valid
-@NotNull
-private DataSourceFactory dataSourceFactory = new DataSourceFactory();
+        @Valid
+        @NotNull
+        private DataSourceFactory dataSourceFactory = new DataSourceFactory();
 
-@JsonProperty(CONFIG)
-public DataSourceFactory getDataSourceFactory(){
-        return dataSourceFactory;
+        @JsonProperty(DB)
+        public DataSourceFactory getDataSourceFactory() {
+                return dataSourceFactory;
         }
-
-@JsonProperty(CONFIG)
-public void setDataSourceFactory(DataSourceFactory dataSourceFactory){
-        this.dataSourceFactory = dataSourceFactory;
-        }
-        }
+}

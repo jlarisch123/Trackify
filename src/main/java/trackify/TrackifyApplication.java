@@ -1,24 +1,40 @@
 package trackify;
 
 import io.dropwizard.Application;
+import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.hibernate.HibernateBundle;
+import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import org.skife.jdbi.v2.DBI;
-
-import javax.sql.DataSource;
+import trackify.core.Album;
+import trackify.db.AlbumDAO;
+import trackify.resources.TrackifyResource;
 
 public class TrackifyApplication extends Application<TrackifyConfiguration> {
-    private static final String SQL = "sql";
+
+    private final HibernateBundle<TrackifyConfiguration> hibernateBundle
+            = new HibernateBundle<TrackifyConfiguration>(Album.class)
+                {
+                @Override
+                public DataSourceFactory getDataSourceFactory(
+                        TrackifyConfiguration configuration) {
+                    return configuration.getDataSourceFactory();
+                }
+    };
+
 
     public static void main(String[] args) throws Exception {
         new TrackifyApplication().run(args);
     }
 
     @Override
-    public void run(TrackifyConfiguration configuration, Environment environment) {
-        // Datasource configuration
-        final DataSource dataSource =
-                configuration.getDataSourceFactory().build(environment.metrics(), SQL);
-        DBI dbi = new DBI(dataSource);
+    public void initialize(Bootstrap<TrackifyConfiguration> bootstrap){
+        bootstrap.addBundle(hibernateBundle);
+    }
 
+    @Override
+    public void run(TrackifyConfiguration configuration, Environment environment) {
+        final AlbumDAO albumDAO = new AlbumDAO(hibernateBundle.getSessionFactory());
+
+        environment.jersey().register(new TrackifyResource(albumDAO));
     }
 }
